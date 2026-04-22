@@ -20,38 +20,62 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-
-    /* WARNA PARIWISATA (BIRU + EMAS) */
     background: linear-gradient(135deg, #0f172a, #1e3a8a);
     color: white;
 }
 
-/* CONTAINER */
 .container {
     text-align: center;
     width: 90%;
-    max-width: 400px;
+    max-width: 420px;
 }
 
-/* LOGO */
 .logo {
     width: 110px;
     height: 110px;
     border-radius: 50%;
-    object-fit: cover;
     border: 3px solid #facc15;
     margin-bottom: 15px;
     box-shadow: 0 0 20px rgba(250,204,21,0.5);
 }
 
-/* TITLE */
 h1 {
     font-size: 1.8rem;
 }
 
 p {
+    opacity: 0.8;
+    margin-bottom: 15px;
+}
+
+/* TANGGAL */
+.date {
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    color: #facc15;
+}
+
+/* COUNTDOWN */
+.countdown {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.time-box {
+    background: rgba(255,255,255,0.1);
+    padding: 10px;
+    border-radius: 10px;
+    width: 22%;
+}
+
+.time-box h2 {
+    font-size: 1.2rem;
+}
+
+.time-box span {
+    font-size: 0.7rem;
     opacity: 0.7;
-    margin-bottom: 25px;
 }
 
 /* BUTTON */
@@ -62,19 +86,17 @@ p {
     border-radius: 12px;
     text-decoration: none;
     font-weight: 600;
-    transition: 0.3s;
-
-    /* GLASS + GOLD */
     background: linear-gradient(135deg, #facc15, #eab308);
     color: black;
+    transition: 0.3s;
 }
 
-.btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(250,204,21,0.6);
+.btn.disabled {
+    background: gray;
+    pointer-events: none;
+    opacity: 0.6;
 }
 
-/* FOOTER */
 .footer {
     margin-top: 20px;
     font-size: 0.8rem;
@@ -87,24 +109,65 @@ p {
 
 <div class="container">
 
-    <!-- LOGO DARI LINK -->
     <img src="https://lh3.googleusercontent.com/d/1k4CSzwMHage8h4jJSXpZFkyA1TiogD3j=w200" class="logo">
 
     <h1>SMKN 3 KENDARI</h1>
-    <p>Portal Pengumuman Kelulusan Sekolah</p>
+    <p>Portal Pengumuman Kelulusan</p>
 
-    <!-- BUTTON UTAMA -->
-    <a class="btn" 
-       href="https://script.google.com/a/guru.smk.belajar.id/macros/s/AKfycbwYWqOm3GYimvW1Esd6SIZkKnhHVu2Vuc6uJmeYmByfbcOIbdrMTB8zdSWs5Kqhrh3u/exec" 
-       target="_blank">
-        📢 Lihat Pengumuman
-    </a>
+    <div class="date" id="tanggal"></div>
 
-    <div class="footer">
-        © 2026 SMKN 3 Kendari
+    <div class="countdown">
+        <div class="time-box"><h2 id="hari">0</h2><span>Hari</span></div>
+        <div class="time-box"><h2 id="jam">0</h2><span>Jam</span></div>
+        <div class="time-box"><h2 id="menit">0</h2><span>Menit</span></div>
+        <div class="time-box"><h2 id="detik">0</h2><span>Detik</span></div>
     </div>
 
+    <a id="btn" class="btn disabled"
+       href="https://script.google.com/a/guru.smk.belajar.id/macros/s/AKfycbwYWqOm3GYimvW1Esd6SIZkKnhHVu2Vuc6uJmeYmByfbcOIbdrMTB8zdSWs5Kqhrh3u/exec"
+       target="_blank">
+       🔒 Belum Dibuka
+    </a>
+
+    <div class="footer">© 2026 SMKN 3 Kendari</div>
+
 </div>
+
+<script>
+const target = new Date("2026-05-06T17:00:00+08:00");
+
+// tampil hari & tanggal
+const hariNama = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+const bulanNama = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+
+const tgl = target;
+document.getElementById("tanggal").innerHTML =
+    `${hariNama[tgl.getDay()]}, ${tgl.getDate()} ${bulanNama[tgl.getMonth()]} ${tgl.getFullYear()} - 17:00 WITA`;
+
+function update() {
+    const now = new Date();
+    const diff = target - now;
+
+    if (diff <= 0) {
+        document.getElementById("btn").classList.remove("disabled");
+        document.getElementById("btn").innerHTML = "📢 Lihat Pengumuman";
+        return;
+    }
+
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor((diff / (1000*60*60)) % 24);
+    const m = Math.floor((diff / (1000*60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+
+    document.getElementById("hari").innerText = d;
+    document.getElementById("jam").innerText = h;
+    document.getElementById("menit").innerText = m;
+    document.getElementById("detik").innerText = s;
+}
+
+setInterval(update,1000);
+update();
+</script>
 
 </body>
 </html>
